@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>ファイル変換アップローダー</title>
+</head>
+<body>
+  <h2>ファイルをアップロードし変換</h2>
+
+  <input type="file" id="fileInput" /><br><br>
+
+  <label>変換形式を選択:</label>
+  <select id="outputFormat">
+  <optgroup label="🔊 オーディオ">
+    <option value="aac">AAC</option>
+    <option value="ac3">AC3</option>
+    <option value="aiff">AIFF</option>
+    <option value="flac">FLAC</option>
+    <option value="m4a">M4A</option>
+    <option value="mp3">MP3</option>
+    <option value="ogg">OGG</option>
+    <option value="wav">WAV</option>
+    <option value="wma">WMA</option>
+  </optgroup>
+  <optgroup label="🎥 ビデオ">
+    <option value="mp4">MP4</option>
+    <option value="avi">AVI</option>
+    <option value="mov">MOV</option>
+    <option value="mkv">MKV</option>
+    <option value="flv">FLV</option>
+    <option value="wmv">WMV</option>
+    <option value="webm">WEBM</option>
+    <option value="mpeg">MPEG</option>
+    <option value="3gp">3GP</option>
+    <option value="m4v">M4V</option>
+    <option value="ts">TS</option>
+  </optgroup>
+  <optgroup label="📄 ドキュメント">
+    <option value="doc">DOC</option>
+    <option value="docx">DOCX</option>
+    <option value="odt">ODT</option>
+    <option value="pdf">PDF</option>
+    <option value="rtf">RTF</option>
+    <option value="txt">TXT</option>
+    <option value="html">HTML</option>
+    <option value="md">MD</option>
+    <option value="wps">WPS</option>
+    <option value="hwp">HWP</option>
+    <option value="zabw">ZABW</option>
+  </optgroup>
+  <optgroup label="📚 電子書籍">
+    <option value="epub">EPUB</option>
+    <option value="mobi">MOBI</option>
+    <option value="azw">AZW</option>
+    <option value="azw3">AZW3</option>
+    <option value="cbz">CBZ</option>
+    <option value="cbr">CBR</option>
+    <option value="fb2">FB2</option>
+    <option value="lit">LIT</option>
+    <option value="lrf">LRF</option>
+    <option value="pdb">PDB</option>
+    <option value="tcr">TCR</option>
+  </optgroup>
+  <optgroup label="🗜️ 圧縮ファイル">
+    <option value="zip">ZIP</option>
+    <option value="rar">RAR</option>
+    <option value="7z">7Z</option>
+    <option value="tar">TAR</option>
+    <option value="gz">GZ</option>
+    <option value="bz2">BZ2</option>
+    <option value="iso">ISO</option>
+    <option value="dmg">DMG</option>
+    <option value="cab">CAB</option>
+    <option value="lzh">LZH</option>
+    <option value="arj">ARJ</option>
+    <option value="cpio">CPIO</option>
+    <option value="rpm">RPM</option>
+  </optgroup>
+  <optgroup label="🖼️ 画像">
+    <option value="jpg">JPG</option>
+    <option value="png">PNG</option>
+    <option value="gif">GIF</option>
+    <option value="bmp">BMP</option>
+    <option value="tiff">TIFF</option>
+    <option value="heic">HEIC</option>
+    <option value="webp">WEBP</option>
+    <option value="psd">PSD</option>
+    <option value="cr2">CR2</option>
+    <option value="nef">NEF</option>
+    <option value="arw">ARW</option>
+    <option value="svg">SVG</option>
+    <option value="eps">EPS</option>
+    <option value="ico">ICO</option>
+  </optgroup>
+  <optgroup label="📊 スプレッドシート">
+    <option value="xls">XLS</option>
+    <option value="xlsx">XLSX</option>
+    <option value="ods">ODS</option>
+    <option value="csv">CSV</option>
+    <option value="numbers">NUMBERS</option>
+    <option value="et">ET</option>
+    <option value="sdc">SDC</option>
+  </optgroup>
+  <optgroup label="📽️ プレゼンテーション">
+    <option value="ppt">PPT</option>
+    <option value="pptx">PPTX</option>
+    <option value="odp">ODP</option>
+    <option value="key">KEY</option>
+    <option value="pps">PPS</option>
+    <option value="ppsx">PPSX</option>
+    <option value="pot">POT</option>
+    <option value="potx">POTX</option>
+    <option value="dps">DPS</option>
+    <option value="sda">SDA</option>
+  </optgroup>
+  <optgroup label="✏️ ベクター／CAD">
+    <option value="ai">AI</option>
+    <option value="svg">SVG</option>
+    <option value="svgz">SVGZ</option>
+    <option value="cdr">CDR</option>
+    <option value="cgm">CGM</option>
+    <option value="emf">EMF</option>
+    <option value="wmf">WMF</option>
+    <option value="sk">SK</option>
+    <option value="sk1">SK1</option>
+    <option value="vsd">VSD</option>
+    <option value="dwg">DWG</option>
+    <option value="dxf">DXF</option>
+  </optgroup>
+  <optgroup label="🔤 フォント">
+    <option value="ttf">TTF</option>
+    <option value="otf">OTF</option>
+    <option value="woff">WOFF</option>
+    <option value="woff2">WOFF2</option>
+    <option value="eot">EOT</option>
+  </optgroup>
+  </select><br><br>
+
+  <button onclick="uploadAndConvert()">アップロードして変換</button>
+
+  <pre id="log"></pre>
+
+  <script>
+    const GOOGLE_DRIVE_ACCESS_TOKEN = 'YOUR_GOOGLE_DRIVE_ACCESS_TOKEN';
+    const CLOUDCONVERT_API_KEY = 'YOUR_CLOUDCONVERT_API_KEY';
+
+    async function uploadAndConvert() {
+      const fileInput = document.getElementById('fileInput');
+      const file = fileInput.files[0];
+      const format = document.getElementById('outputFormat').value;
+      const log = document.getElementById('log');
+
+      if (!file) return alert("ファイルを選択してください");
+
+      // 1. Google Driveにアップロード
+      log.textContent = "Google Drive にアップロード中...";
+
+      const metadata = {
+        name: file.name,
+        mimeType: file.type
+      };
+
+      const form = new FormData();
+      form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+      form.append('file', file);
+
+      const uploadRes = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${GOOGLE_DRIVE_ACCESS_TOKEN}`
+        },
+        body: form
+      });
+
+      const fileData = await uploadRes.json();
+      const fileId = fileData.id;
+
+      // 2. 共有設定を変更（公開リンク作成）
+      await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}/permissions`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${GOOGLE_DRIVE_ACCESS_TOKEN}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          role: 'reader',
+          type: 'anyone'
+        })
+      });
+
+      const fileUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
+      log.textContent += `\nアップロード完了: ${fileUrl}`;
+
+      // 3. CloudConvert に送信
+      log.textContent += "\nCloudConvert に変換依頼中...";
+
+      const jobRes = await fetch('https://sync.api.cloudconvert.com/v2/jobs', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${CLOUDCONVERT_API_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          tasks: {
+            "import-my-file": {
+              operation: "import/url",
+              url: fileUrl
+            },
+            "convert-my-file": {
+              operation: "convert",
+              input: "import-my-file",
+              input_format: file.name.split('.').pop(),
+              output_format: format
+            },
+            "export-my-file": {
+              operation: "export/url",
+              input: "convert-my-file"
+            }
+          },
+          redirect: true
+        })
+      });
+
+      const jobData = await jobRes.json();
+      log.textContent += `\n変換完了:\n${JSON.stringify(jobData, null, 2)}`;
+    }
+  </script>
+</body>
+</html>
